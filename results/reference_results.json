@@ -1,0 +1,472 @@
+{
+ "n": 3156,
+ "cols": [
+  "participant_id",
+  "age",
+  "gender",
+  "academic_year",
+  "ai_knowledge",
+  "ai_tools_used",
+  "career_path",
+  "ai_tool_perception",
+  "ai_future_perspective",
+  "ai_replace_jobs",
+  "ai_takeover_time",
+  "career_anxiety",
+  "consent"
+ ],
+ "quality": {
+  "missing": {
+   "ai_knowledge": 45,
+   "ai_tool_perception": 91
+  },
+  "dup_rows": 0,
+  "dup_ids": 0,
+  "consent": {
+   "Yes": 3156
+  },
+  "age": {
+   "min": 18,
+   "max": 27,
+   "mean": 21.51,
+   "sd": 1.5
+  },
+  "rare_ages": {
+   "27": 5,
+   "26": 5
+  },
+  "perception_none_variants": {
+   "none": 22,
+   "Nothing": 10,
+   "None of them": 8,
+   "I don't know for now": 4,
+   "none of them": 3,
+   "No": 2
+  },
+  "perception_levels": 68,
+  "career_levels": 160,
+  "encoded_bad_values": {
+   "ai_takeover_time": [
+    "h"
+   ]
+  },
+  "encoded_bad_row": {
+   "participant_id": "31YD3J",
+   "raw_value": "Never"
+  },
+  "tool_spellings": [
+   "Deepseek",
+   "Quiltbot",
+   "quillbot"
+  ]
+ },
+ "tools": {
+  "ChatGPT": 3094,
+  "Google Gemini": 2525,
+  "Deepseek": 1456,
+  "Microsoft Copilot": 1165,
+  "Grammarly": 474,
+  "QuillBot": 195,
+  "Perplexity": 146,
+  "Photomath": 97,
+  "Midjourney": 71,
+  "Napkin ai": 62,
+  "Grok": 30,
+  "Claude": 16
+ },
+ "tools_pct": {
+  "ChatGPT": 98.0,
+  "Google Gemini": 80.0,
+  "Deepseek": 46.1,
+  "Microsoft Copilot": 36.9,
+  "Grammarly": 15.0,
+  "QuillBot": 6.2,
+  "Perplexity": 4.6,
+  "Photomath": 3.1,
+  "Midjourney": 2.2,
+  "Napkin ai": 2.0,
+  "Grok": 1.0,
+  "Claude": 0.5
+ },
+ "n_tools": {
+  "mean": 2.99,
+  "median": 3,
+  "max": 6
+ },
+ "freq": {
+  "career_anxiety": {
+   "No Anxiety": [
+    413,
+    13.1
+   ],
+   "Low": [
+    648,
+    20.5
+   ],
+   "Medium": [
+    1634,
+    51.8
+   ],
+   "High": [
+    461,
+    14.6
+   ]
+  },
+  "gender": {
+   "Male": [
+    1932,
+    61.2
+   ],
+   "Female": [
+    1224,
+    38.8
+   ]
+  },
+  "academic_year": {
+   "1st Year": [
+    1120,
+    35.5
+   ],
+   "2nd Year": [
+    985,
+    31.2
+   ],
+   "3rd Year": [
+    762,
+    24.1
+   ],
+   "4th Year": [
+    289,
+    9.2
+   ]
+  },
+  "ai_knowledge": {
+   "Low": [
+    523,
+    16.6
+   ],
+   "Medium": [
+    2374,
+    75.2
+   ],
+   "High": [
+    214,
+    6.8
+   ],
+   "Missing": [
+    45,
+    1.4
+   ]
+  },
+  "ai_replace_jobs": {
+   "No": [
+    540,
+    17.1
+   ],
+   "Partially": [
+    2329,
+    73.8
+   ],
+   "Fully": [
+    287,
+    9.1
+   ]
+  },
+  "ai_takeover_time": {
+   "Never": [
+    1056,
+    33.5
+   ],
+   "50+ years": [
+    175,
+    5.5
+   ],
+   "21\u201350 years": [
+    376,
+    11.9
+   ],
+   "11\u201320 years": [
+    435,
+    13.8
+   ],
+   "6\u201310 years": [
+    679,
+    21.5
+   ],
+   "1\u20135 years": [
+    435,
+    13.8
+   ]
+  },
+  "perspective_short": {
+   "Helpful tool only": [
+    429,
+    13.6
+   ],
+   "Mostly assist": [
+    375,
+    11.9
+   ],
+   "Replace some, create new": [
+    1358,
+    43.0
+   ],
+   "Significantly replace": [
+    507,
+    16.1
+   ],
+   "Complete takeover": [
+    487,
+    15.4
+   ]
+  }
+ },
+ "career_top": {
+  "Software Engineer": 671,
+  "Researcher": 652,
+  "Data Scientist": 463,
+  "Cyber Security Expert": 113,
+  "Pharmacist": 107,
+  "Web Developer": 70,
+  "Teacher": 63,
+  "Software Developer": 48
+ },
+ "ct_knowledge_anx_pct": {
+  "Low": {
+   "No Anxiety": 11.9,
+   "Low": 23.9,
+   "Medium": 48.0,
+   "High": 16.3
+  },
+  "Medium": {
+   "No Anxiety": 12.6,
+   "Low": 19.8,
+   "Medium": 53.8,
+   "High": 13.8
+  },
+  "High": {
+   "No Anxiety": 22.0,
+   "Low": 21.0,
+   "Medium": 39.3,
+   "High": 17.8
+  }
+ },
+ "ct_replace_anx_pct": {
+  "No": {
+   "No Anxiety": 20.4,
+   "Low": 22.4,
+   "Medium": 45.9,
+   "High": 11.3
+  },
+  "Partially": {
+   "No Anxiety": 11.9,
+   "Low": 20.5,
+   "Medium": 53.2,
+   "High": 14.4
+  },
+  "Fully": {
+   "No Anxiety": 9.4,
+   "Low": 17.1,
+   "Medium": 50.9,
+   "High": 22.6
+  }
+ },
+ "ct_gender_anx_pct": {
+  "Female": {
+   "No Anxiety": 12.0,
+   "Low": 19.4,
+   "Medium": 54.7,
+   "High": 13.9
+  },
+  "Male": {
+   "No Anxiety": 13.8,
+   "Low": 21.2,
+   "Medium": 49.9,
+   "High": 15.1
+  }
+ },
+ "ct_persp_anx_pct": {
+  "Helpful tool only": {
+   "No Anxiety": 18.2,
+   "Low": 23.1,
+   "Medium": 45.7,
+   "High": 13.1
+  },
+  "Mostly assist": {
+   "No Anxiety": 13.6,
+   "Low": 24.3,
+   "Medium": 49.9,
+   "High": 12.3
+  },
+  "Replace some, create new": {
+   "No Anxiety": 13.8,
+   "Low": 21.1,
+   "Medium": 51.8,
+   "High": 13.3
+  },
+  "Significantly replace": {
+   "No Anxiety": 8.5,
+   "Low": 19.3,
+   "Medium": 56.4,
+   "High": 15.8
+  },
+  "Complete takeover": {
+   "No Anxiety": 10.9,
+   "Low": 15.2,
+   "Medium": 53.6,
+   "High": 20.3
+  }
+ },
+ "high_med_by_persp": {
+  "Helpful tool only": 58.7,
+  "Mostly assist": 62.1,
+  "Replace some, create new": 65.1,
+  "Significantly replace": 72.2,
+  "Complete takeover": 73.9
+ },
+ "inferential": {
+  "chi_gender": {
+   "chi2": 6.84,
+   "df": 3,
+   "p": 0.07726352939884645,
+   "cramers_v": 0.047,
+   "n": 3156,
+   "min_expected": 160.2
+  },
+  "chi_knowledge": {
+   "chi2": 30.79,
+   "df": 6,
+   "p": 2.7804449950447432e-05,
+   "cramers_v": 0.07,
+   "n": 3111,
+   "min_expected": 28.1
+  },
+  "chi_replace": {
+   "chi2": 51.59,
+   "df": 6,
+   "p": 2.2504506845571497e-09,
+   "cramers_v": 0.09,
+   "n": 3156,
+   "min_expected": 37.6
+  },
+  "chi_year": {
+   "chi2": 10.93,
+   "df": 9,
+   "p": 0.28087789769969523,
+   "cramers_v": 0.034,
+   "n": 3156,
+   "min_expected": 37.8
+  },
+  "chi_perspective": {
+   "chi2": 51.36,
+   "df": 12,
+   "p": 8.046854295639792e-07,
+   "cramers_v": 0.074,
+   "n": 3156,
+   "min_expected": 49.1
+  },
+  "spearman": {
+   "ai_knowledge_code": {
+    "rho": -0.02,
+    "p": 0.2705064603892561,
+    "n": 3111
+   },
+   "ai_replace_jobs_code": {
+    "rho": 0.112,
+    "p": 3.136401810846214e-10,
+    "n": 3156
+   },
+   "perspective_code": {
+    "rho": 0.111,
+    "p": 4.74483316161801e-10,
+    "n": 3156
+   },
+   "ai_takeover_time_code": {
+    "rho": 0.103,
+    "p": 6.667841028873281e-09,
+    "n": 3156
+   },
+   "academic_year_code": {
+    "rho": 0.038,
+    "p": 0.03467976873243062,
+    "n": 3156
+   },
+   "age": {
+    "rho": 0.024,
+    "p": 0.18016670650466785,
+    "n": 3156
+   },
+   "n_tools": {
+    "rho": 0.015,
+    "p": 0.3858143642226447,
+    "n": 3156
+   }
+  },
+  "kruskal_year": {
+   "H": 5.0,
+   "df": 3,
+   "p": 0.1714799637003951,
+   "epsilon2": 0.0006
+  },
+  "mw_gender": {
+   "U": 1210390.5,
+   "p": 0.22251047763412435,
+   "mean_female": 1.7,
+   "mean_male": 1.66
+  },
+  "ordinal_logit": {
+   "n": 3111,
+   "ors": [
+    {
+     "predictor": "ai_knowledge_code",
+     "OR": 0.91,
+     "ci_low": 0.79,
+     "ci_high": 1.05,
+     "p": 0.18699253111973724
+    },
+    {
+     "predictor": "ai_replace_jobs_code",
+     "OR": 1.48,
+     "ci_low": 1.3,
+     "ci_high": 1.7,
+     "p": 7.999387939789284e-09
+    },
+    {
+     "predictor": "perspective_code",
+     "OR": 1.17,
+     "ci_low": 1.11,
+     "ci_high": 1.24,
+     "p": 5.0817132734903785e-08
+    },
+    {
+     "predictor": "female",
+     "OR": 1.09,
+     "ci_low": 0.95,
+     "ci_high": 1.25,
+     "p": 0.19588425188033853
+    },
+    {
+     "predictor": "academic_year_code",
+     "OR": 1.09,
+     "ci_low": 1.01,
+     "ci_high": 1.16,
+     "p": 0.01823817875448709
+    }
+   ],
+   "pseudo_r2": null,
+   "mcfadden_r2": 0.011
+  }
+ },
+ "career_groups": {
+  "Software & IT": 938,
+  "Research & Academia": 776,
+  "Data & AI": 646,
+  "Business & Finance": 300,
+  "Health & Food": 173,
+  "Cybersecurity": 157,
+  "Engineering": 90,
+  "Creative & Media": 45,
+  "Public service": 25,
+  "Other": 6
+ }
+}

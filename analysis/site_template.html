@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>EWU Prompt Lab</title>
+<meta name="description" content="Prompt-based, ethical data analysis with Claude or ChatGPT on a real survey dataset. EWU AI for Research training.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&display=swap">
+<style>
+/* Layout: a field guide. Hero with the dataset, then one long page of numbered sections; the workflow is a stepper with prompt cards. */
+:root {
+  --bg: #F1F3F6; --surface: #FFFFFF; --surface-2: #E7EBF1; --line: #D3DAE3;
+  --ink: #14213D; --fg: #1E293A; --muted: #586579;
+  --accent: #B5541A; --accent-soft: #FBE7D7; --blue: #25668C; --blue-soft: #DCEAF3;
+  --good: #2C774B; --good-soft: #DDF0E4; --warn: #94600A; --warn-soft: #FAEFD6; --bad: #AE3434; --bad-soft: #F8E0E0;
+  --role: #E5DCF5; --context: #D6E8F5; --task: #DDF0E4; --format: #FAEFD6; --check: #F8E0E0;
+  --f-display: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --f-body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+  --r: 12px;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0E1522; --surface: #151E2E; --surface-2: #1C2739; --line: #2B374C;
+  --ink: #EAF0F7; --fg: #D6DDE8; --muted: #98A5B9;
+  --accent: #F0954A; --accent-soft: #3A2716; --blue: #82BEE3; --blue-soft: #16293A;
+  --good: #72C796; --good-soft: #15301F; --warn: #E6B653; --warn-soft: #33270F; --bad: #F08484; --bad-soft: #3A1A1A;
+  --role: #33294A; --context: #1B3346; --task: #1B3A27; --format: #3A2F14; --check: #3E1E1E; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #0E1522; --surface: #151E2E; --surface-2: #1C2739; --line: #2B374C;
+  --ink: #EAF0F7; --fg: #D6DDE8; --muted: #98A5B9;
+  --accent: #F0954A; --accent-soft: #3A2716; --blue: #82BEE3; --blue-soft: #16293A;
+  --good: #72C796; --good-soft: #15301F; --warn: #E6B653; --warn-soft: #33270F; --bad: #F08484; --bad-soft: #3A1A1A;
+  --role: #33294A; --context: #1B3346; --task: #1B3A27; --format: #3A2F14; --check: #3E1E1E; color-scheme: dark; }
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { transition: none !important; } }
+body { margin: 0; background: var(--bg); color: var(--fg); font: 16px/1.6 var(--f-body); }
+h1, h2, h3, h4 { font-family: var(--f-display); color: var(--ink); margin: 0; line-height: 1.2; text-wrap: balance; }
+h2 { font-size: clamp(1.7rem, 3vw, 2.3rem); font-weight: 600; }
+h3 { font-size: 1.25rem; font-weight: 600; }
+h4 { font-family: var(--f-body); font-size: .95rem; font-weight: 600; margin: 14px 0 6px; }
+p { margin: 0; }
+a { color: var(--blue); }
+code, pre { font-family: var(--f-mono); }
+code { font-size: .86em; background: var(--surface-2); padding: 1px 5px; border-radius: 4px; }
+:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+.wrap { max-width: 1160px; margin: 0 auto; padding-inline: max(16px, 3vw); }
+.eyebrow { font-size: .75rem; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); font-weight: 600; }
+.lead { color: var(--muted); font-size: 1.06rem; max-width: 68ch; }
+.muted { color: var(--muted); } .small { font-size: .88rem; }
+
+/* top bar */
+.bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 30; background: var(--surface); border-bottom: 1px solid var(--line); }
+.bar .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 10px; flex-wrap: wrap; }
+.brand { display: flex; align-items: baseline; gap: 10px; }
+.brand b { font-family: var(--f-display); font-size: 1.2rem; color: var(--ink); }
+.nav { display: flex; gap: 4px; flex-wrap: wrap; }
+.nav a { text-decoration: none; color: var(--fg); font-size: .88rem; padding: 6px 10px; border-radius: 7px; }
+.nav a:hover { background: var(--surface-2); }
+
+/* hero */
+.hero { padding-block: 56px 40px; display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 40px; align-items: center; }
+.hero h1 { font-size: clamp(2.2rem, 5vw, 3.5rem); font-weight: 700; letter-spacing: -.01em; }
+.hero h1 em { font-style: normal; color: var(--accent); }
+.hero .lead { margin-top: 16px; }
+.cta { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 24px; }
+.btn { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--fg); padding: 9px 16px; border-radius: 9px; font: 500 .93rem var(--f-body); cursor: pointer; text-decoration: none; }
+.btn:hover { border-color: var(--blue); }
+.btn.primary { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.btn.small { padding: 5px 11px; font-size: .84rem; }
+.datacard { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 22px; display: flex; flex-direction: column; gap: 14px; box-shadow: 0 12px 30px rgba(20, 33, 61, .07); }
+.datacard .title { font-family: var(--f-display); font-size: 1.12rem; color: var(--ink); font-weight: 600; line-height: 1.3; }
+.kv { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.kv div { background: var(--surface-2); border-radius: 9px; padding: 10px 12px; }
+.kv b { display: block; font: 600 1.4rem var(--f-mono); color: var(--ink); font-variant-numeric: tabular-nums; }
+.kv span { font-size: .8rem; color: var(--muted); }
+.license { font-size: .82rem; color: var(--muted); }
+
+section.block { padding-block: 56px; border-top: 1px solid var(--line); }
+.head { display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; }
+.how { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; counter-reset: h; }
+.how div { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 16px; display: flex; flex-direction: column; gap: 6px; }
+.how div::before { counter-increment: h; content: counter(h); font: 600 .85rem var(--f-mono); color: var(--accent); }
+.how b { color: var(--ink); }
+.how span { font-size: .9rem; color: var(--muted); }
+
+/* ethics */
+.eth { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 22px; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.quote { font-family: var(--f-display); font-size: 1.12rem; color: var(--ink); border-left: 4px solid var(--accent); padding-left: 14px; line-height: 1.45; }
+.check { display: flex; gap: 10px; align-items: flex-start; padding: 8px 0; border-top: 1px solid var(--line); cursor: pointer; }
+.check:first-of-type { border-top: 0; }
+.check input { margin-top: 5px; accent-color: var(--good); width: 17px; height: 17px; flex: none; }
+.check small { display: block; color: var(--muted); }
+.meter { height: 8px; background: var(--surface-2); border-radius: 99px; overflow: hidden; }
+.meter i { display: block; height: 100%; background: var(--good); width: 0; transition: width .25s; }
+.dodont { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px; }
+.dodont ul { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 6px; font-size: .93rem; }
+.dodont h4 { margin-top: 0; }
+.do h4 { color: var(--good); } .dont h4 { color: var(--bad); }
+
+/* workflow */
+.steps { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 20px; scrollbar-width: thin; }
+.steps button { flex: none; display: flex; flex-direction: column; align-items: flex-start; gap: 2px; border: 1px solid var(--line); background: var(--surface); border-radius: 10px; padding: 8px 12px; cursor: pointer; min-width: 104px; text-align: left; }
+.steps button .n { font: 600 .76rem var(--f-mono); color: var(--muted); }
+.steps button .t { font-size: .86rem; font-weight: 600; color: var(--ink); }
+.steps button[aria-selected="true"] { background: var(--ink); border-color: var(--ink); }
+.steps button[aria-selected="true"] .t, .steps button[aria-selected="true"] .n { color: var(--bg); }
+.stephead { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap; margin-bottom: 18px; }
+.prompt { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; margin-bottom: 18px; overflow: hidden; }
+.ph { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; padding: 16px 20px; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+.ph h3 { font-size: 1.15rem; }
+.ph .id { font: 600 .82rem var(--f-mono); color: var(--accent); margin-right: 8px; }
+.tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+.tag { font-size: .74rem; padding: 2px 8px; border-radius: 99px; background: var(--surface-2); color: var(--fg); font-weight: 500; }
+.tag.code { background: var(--blue-soft); color: var(--blue); }
+.pbody { padding: 16px 20px; display: flex; flex-direction: column; gap: 12px; }
+.ptext { font: .9rem/1.65 var(--f-mono); background: var(--surface-2); border-radius: 10px; padding: 14px 16px; white-space: pre-wrap; word-break: break-word; margin: 0; color: var(--fg); }
+.ptext span { border-radius: 3px; transition: background .15s; }
+.anat .ptext span.seg-role { background: var(--role); } .anat .ptext span.seg-context { background: var(--context); }
+.anat .ptext span.seg-task { background: var(--task); } .anat .ptext span.seg-format { background: var(--format); } .anat .ptext span.seg-check { background: var(--check); }
+.legend { display: flex; gap: 10px; flex-wrap: wrap; font-size: .78rem; color: var(--muted); }
+.legend i { display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 4px; vertical-align: -2px; }
+.prow { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.toggle { display: inline-flex; align-items: center; gap: 6px; font-size: .86rem; color: var(--muted); cursor: pointer; }
+.result { border-top: 1px dashed var(--line); padding: 16px 20px 20px; display: flex; flex-direction: column; gap: 10px; }
+.result .rlabel { display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+.result .rlabel b { color: var(--good); font-size: .82rem; letter-spacing: .08em; text-transform: uppercase; }
+.notes { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px; }
+.notes div { border-radius: 9px; padding: 10px 12px; font-size: .88rem; }
+.notes .v { background: var(--good-soft); } .notes .x { background: var(--accent-soft); }
+.notes b { display: block; font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 2px; }
+.notes .v b { color: var(--good); } .notes .x b { color: var(--accent); }
+.tbl { overflow-x: auto; border: 1px solid var(--line); border-radius: 9px; }
+table { border-collapse: collapse; width: 100%; font-size: .86rem; font-variant-numeric: tabular-nums; }
+th, td { padding: 7px 10px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+th { background: var(--surface-2); color: var(--ink); font-weight: 600; white-space: nowrap; }
+tr:last-child td { border-bottom: 0; }
+.pill { display: inline-block; font-size: .74rem; font-weight: 600; padding: 1px 8px; border-radius: 99px; }
+.pill.ok { background: var(--good-soft); color: var(--good); } .pill.warn { background: var(--warn-soft); color: var(--warn); }
+.note { font-size: .88rem; color: var(--muted); }
+.grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 16px; }
+.grid2 .span2 { grid-column: 1 / -1; }
+figure { margin: 0; background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 10px; }
+figure img { display: block; width: 100%; height: auto; max-width: 100%; }
+figcaption { font-size: .8rem; color: #586579; margin-top: 6px; }
+blockquote { margin: 0; padding: 12px 16px; background: var(--surface-2); border-radius: 9px; font-family: var(--f-display); font-size: 1.02rem; line-height: 1.55; color: var(--ink); }
+pre.file { font-size: .76rem; background: var(--surface-2); padding: 12px; border-radius: 9px; white-space: pre-wrap; max-height: 320px; overflow: auto; margin: 0; }
+ul.plain, ol.rq { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 4px; font-size: .92rem; }
+ol.rq i { color: var(--muted); }
+
+/* types */
+.types { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 12px; }
+.type { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 16px; display: flex; flex-direction: column; gap: 8px; text-align: left; cursor: pointer; font: inherit; color: inherit; }
+.type:hover, .type[aria-pressed="true"] { border-color: var(--accent); }
+.type b { font-family: var(--f-display); font-size: 1.05rem; color: var(--ink); }
+.type q { font: .8rem/1.5 var(--f-mono); color: var(--fg); background: var(--surface-2); padding: 8px; border-radius: 7px; quotes: none; }
+.type .use { font-size: .8rem; color: var(--muted); }
+.type .used { font-size: .78rem; color: var(--accent); font-weight: 600; }
+
+/* ladder */
+.ladder { display: flex; flex-direction: column; gap: 8px; }
+.rung { display: grid; grid-template-columns: 56px minmax(0, 1.1fr) minmax(0, 1.3fr) minmax(0, 1.2fr); gap: 16px; align-items: start; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 14px 18px; }
+.rung .lv { font: 700 1.4rem var(--f-mono); color: var(--accent); }
+.rung b { display: block; font-family: var(--f-display); font-size: 1.08rem; color: var(--ink); }
+.rung .what { font-size: .9rem; color: var(--muted); }
+.rung .where, .rung .use { font-size: .88rem; }
+.rung .where em { font-style: normal; color: var(--muted); display: block; font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; }
+.rung .use em { font-style: normal; color: var(--muted); display: block; font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; }
+.autonomy { display: flex; align-items: center; gap: 10px; font-size: .85rem; color: var(--muted); margin-top: 10px; }
+.autonomy i { flex: 1; height: 6px; border-radius: 99px; background: linear-gradient(90deg, var(--blue-soft), var(--accent)); }
+
+/* ecosystem */
+.eco { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 20px; align-items: start; }
+.stack { display: flex; flex-direction: column; gap: 6px; }
+.layer { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 14px; padding: 12px 16px; border-radius: 10px; background: var(--surface); border: 1px solid var(--line); }
+.layer b { color: var(--ink); font-size: .95rem; }
+.layer span { font-size: .88rem; color: var(--muted); }
+.layer.human { background: var(--accent-soft); border-color: transparent; }
+.layer.human b { color: var(--accent); }
+.principles { display: flex; flex-direction: column; gap: 10px; }
+.principles div { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; }
+.principles b { color: var(--ink); display: block; }
+.principles span { font-size: .88rem; color: var(--muted); }
+
+.dl { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; }
+.dl .card { gap: 8px; }
+.dl .card b { color: var(--ink); }
+footer { padding-block: 40px; border-top: 1px solid var(--line); font-size: .86rem; color: var(--muted); }
+footer .wrap { display: flex; flex-direction: column; gap: 8px; }
+.toast { position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--ink); color: var(--bg); padding: 9px 16px; border-radius: 9px; font-size: .9rem; z-index: 60; max-width: calc(100% - 32px); }
+
+@media (max-width: 900px) {
+  .hero, .eth, .eco { grid-template-columns: minmax(0, 1fr); }
+  .how { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .rung { grid-template-columns: 40px minmax(0, 1fr); }
+  .rung .where, .rung .use { grid-column: 2; }
+  .notes, .grid2, .dodont { grid-template-columns: minmax(0, 1fr); }
+  .layer { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+}
+@media (max-width: 520px) { .how { grid-template-columns: minmax(0, 1fr); } .nav { display: none; } }
+</style>
+</head>
+<body>
+<header class="bar"><div class="wrap">
+  <div class="brand"><b>Prompt Lab</b><span class="small muted">EWU · AI for Research</span></div>
+  <nav class="nav" aria-label="Sections"><a href="#start">Start</a><a href="#ethics">Ethics</a><a href="#workflow">Workflow</a><a href="#types">Prompt types</a><a href="#agents">Prompt to agent</a><a href="#ecosystem">Ecosystem</a><a href="#downloads">Downloads</a></nav>
+</div></header>
+
+<main>
+<div class="wrap hero" id="start">
+  <div>
+    <span class="eyebrow">Faculty training · Department of CSE, East West University</span>
+    <h1 style="margin-top:12px">Analyse a real survey with <em>eleven prompts</em>, and do it ethically</h1>
+    <p class="lead">Download the dataset, open Claude or ChatGPT, and work through a standard analysis from ethics check to methods paragraph. Every prompt shows how it is built, what a good answer looks like, and how to verify it. Both tools can run Python, so you get tables and charts, not just text.</p>
+    <div class="cta"><a class="btn primary" href="#downloads">Download the dataset</a><a class="btn" href="#workflow">Start the workflow</a><a class="btn" href="https://claude.ai" target="_blank" rel="noopener">Open Claude</a><a class="btn" href="https://chatgpt.com" target="_blank" rel="noopener">Open ChatGPT</a></div>
+  </div>
+  <aside class="datacard" aria-label="Dataset">
+    <span class="eyebrow">Demo dataset</span>
+    <p class="title">Career anxiety in the age of artificial intelligence: survey data of university students in Bangladesh</p>
+    <div class="kv"><div><b id="kN"></b><span>students</span></div><div><b>5</b><span>universities</span></div><div><b>13</b><span>variables</span></div><div><b id="kM"></b><span>report medium anxiety</span></div></div>
+    <p class="license">Islam et al. (2026), <i>Data in Brief</i> 67, 112924. Licence <b>CC BY 4.0</b>: free to reuse with citation. <a href="https://doi.org/10.1016/j.dib.2026.112924" target="_blank" rel="noopener">Article</a> · <a href="https://data.mendeley.com/datasets/r3xh8sd764/3" target="_blank" rel="noopener">Mendeley Data</a> · <a href="https://doi.org/10.5281/zenodo.18461007" target="_blank" rel="noopener">Zenodo</a></p>
+  </aside>
+</div>
+
+<div class="wrap" style="padding-bottom:48px">
+  <div class="how">
+    <div><b>Download</b><span>Get dataset.xlsx and the encoded file from Downloads.</span></div>
+    <div><b>Check ethics</b><span>Tick the EWU checklist before you upload.</span></div>
+    <div><b>Open a chat</b><span>Claude or ChatGPT; attach the file to a new chat or Project.</span></div>
+    <div><b>Prompt in order</b><span>Copy prompts 0 to 10; compare with the possible result.</span></div>
+    <div><b>Verify</b><span>Re-run numbers, read the code, disclose AI use.</span></div>
+  </div>
+</div>
+
+<section class="block" id="ethics"><div class="wrap">
+  <div class="head"><span class="eyebrow">01 · Ethics first</span><h2>Do it ethically, the EWU way</h2>
+  <p class="lead">AI makes analysis fast. It does not make it ethical. These checks come before the first upload and stay with you until the disclosure statement.</p></div>
+  <div class="eth">
+    <div class="card">
+      <span class="eyebrow">East West University Research Ethical Committee (EWUREC)</span>
+      <p class="quote">"All research work at EWU should adhere to the highest ethical standards; any research work carried out at EWU which has significant ethical implications will have to be submitted for independent ethical review."</p>
+      <p class="small muted">EWU has a <i>Policy and Procedure for Research Ethics Approval</i> and a <i>Plagiarism Policy</i>. This page summarises good practice; the official policy documents and the committee decide. Source: <a href="https://www.ewubd.edu/members-east-west-university-research-ethical-committee" target="_blank" rel="noopener">EWUREC page</a>.</p>
+      <div class="dodont">
+        <div class="do"><h4>Do</h4><ul><li>Use public, anonymised, licensed data for practice</li><li>Cite the dataset and licence</li><li>Ask the AI to show and run its code</li><li>Recompute every number you report</li><li>Report effect sizes and limitations</li><li>Disclose tool, version and what it did</li><li>Seek EWUREC review for new human-participant data</li></ul></div>
+        <div class="dont"><h4>Don't</h4><ul><li>Upload identifiable participant data</li><li>Try to re-identify anyone</li><li>Publish tables with cells under 10</li><li>Accept numbers you cannot reproduce</li><li>Let AI invent citations or quotes</li><li>Use causal words for survey data</li><li>List an AI tool as an author</li></ul></div>
+      </div>
+    </div>
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px"><h3>Before you upload: checklist</h3><span class="small muted" id="ckCount"></span></div>
+      <div class="meter"><i id="ckBar"></i></div>
+      <div id="checklist"></div>
+      <p class="small muted">Your ticks are saved only in this browser.</p>
+    </div>
+  </div>
+</div></section>
+
+<section class="block" id="workflow"><div class="wrap">
+  <div class="head"><span class="eyebrow">02 · Standard analysis workflow</span><h2>Eleven steps, one prompt each</h2>
+  <p class="lead">Follow the steps in order in one conversation, so the AI keeps the context. Click <b>Show anatomy</b> to see how each prompt is built, and <b>Possible result</b> to compare your answer with ours, computed from the real file.</p>
+  <div class="legend"><span><i style="background:var(--role)"></i>Role</span><span><i style="background:var(--context)"></i>Context</span><span><i style="background:var(--task)"></i>Task</span><span><i style="background:var(--format)"></i>Format</span><span><i style="background:var(--check)"></i>Check (guardrail)</span></div></div>
+  <div class="steps" id="steps" role="tablist" aria-label="Workflow steps"></div>
+  <div id="stepBody"></div>
+  <div class="prow" style="justify-content:space-between"><button class="btn" id="prevStep">← Previous step</button><button class="btn primary" id="nextStep">Next step →</button></div>
+</div></section>
+
+<section class="block" id="types"><div class="wrap">
+  <div class="head"><span class="eyebrow">03 · Types of prompts</span><h2>Ten prompt patterns researchers use</h2>
+  <p class="lead">Most good research prompts combine several patterns. Click a card to see which prompts in the workflow use it.</p></div>
+  <div class="types" id="typeGrid"></div>
+  <div id="typeUse" class="small" style="margin-top:12px"></div>
+</div></section>
+
+<section class="block" id="agents"><div class="wrap">
+  <div class="head"><span class="eyebrow">04 · From prompt to agent</span><h2>How AI systems grow from a single prompt to an agent</h2>
+  <p class="lead">Each level keeps what the level below gives you and adds memory, procedure or action. The higher you go, the more the AI does without asking, and the more your checkpoints matter.</p></div>
+  <div class="ladder" id="ladder"></div>
+  <div class="autonomy"><span>Less autonomy</span><i></i><span>More autonomy: more verification</span></div>
+</div></section>
+
+<section class="block" id="ecosystem"><div class="wrap">
+  <div class="head"><span class="eyebrow">05 · Your research ecosystem</span><h2>Build your own AI research ecosystem</h2>
+  <p class="lead">An ecosystem is the set of files, rules and tools that make every new study start where the last one ended, with your judgement at each gate.</p></div>
+  <div class="eco">
+    <div class="stack">
+      <div class="layer human"><b>You and EWUREC</b><span>Research questions, ethics approval, final decisions, authorship</span></div>
+      <div class="layer"><b>Agents</b><span>Claude Code, ChatGPT agent or Codex run multi-step pipelines with approval checkpoints</span></div>
+      <div class="layer"><b>Tools and connectors</b><span>Code execution, Google Colab, connectors (MCP) to Drive, GitHub, Zotero</span></div>
+      <div class="layer"><b>Skills</b><span>Reusable procedures: survey-analysis-workflow, literature-screening, apa-reporting</span></div>
+      <div class="layer"><b>Context files</b><span>research-context.md per study; CLAUDE.md or AGENTS.md in code folders</span></div>
+      <div class="layer"><b>Projects and knowledge</b><span>One Claude or ChatGPT Project per study with papers, codebooks, protocols</span></div>
+      <div class="layer"><b>Data and records</b><span>Raw data kept read-only, data management plan, prompt log, GitHub repository</span></div>
+    </div>
+    <div class="principles">
+      <div><b>Start small</b><span>One Project and one context file this week; add a skill when you repeat a procedure for the third time.</span></div>
+      <div><b>Keep raw data read-only</b><span>Clean copies only; every change logged and reproducible from code.</span></div>
+      <div><b>Version everything</b><span>Prompts, context files, skills and code in a Git repository like this one.</span></div>
+      <div><b>Human checkpoints</b><span>Approve plans before data change, and verify before results leave the chat.</span></div>
+      <div><b>Privacy by design</b><span>Identifiable data stays on approved systems; the AI sees anonymised or synthetic data.</span></div>
+      <div><b>Disclose and share</b><span>State AI use in every paper; share prompts and code so others can reproduce your work.</span></div>
+    </div>
+  </div>
+</div></section>
+
+<section class="block" id="downloads"><div class="wrap">
+  <div class="head"><span class="eyebrow">06 · Downloads</span><h2>Data, prompts and templates</h2>
+  <p class="lead">The data are shared under CC BY 4.0. Cite Islam et al. (2026) whenever you use them.</p></div>
+  <div class="dl" id="dlGrid"></div>
+  <p class="small muted" style="margin-top:12px">Citation: <span id="citeText"></span> <button class="btn small" id="copyCite">Copy citation</button></p>
+</div></section>
+</main>
+
+<footer><div class="wrap">
+  <p>Prompt Lab · AI for Research faculty training, Department of CSE, East West University. Prepared by Dr. Mohammad Rifat Ahmmad Rashid. Training materials under the MIT licence; dataset under CC BY 4.0 by its authors.</p>
+  <p>Possible results were computed in Python (pandas, SciPy, statsmodels) from the original file. Your AI tool's wording will differ; the numbers should not.</p>
+</div></footer>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+const PAGE = __PAGE_DATA__;
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const store = { get(k, d) { try { const v = localStorage.getItem("ewu-prompt-lab:" + k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } },
+                set(k, v) { try { localStorage.setItem("ewu-prompt-lab:" + k, JSON.stringify(v)); } catch (e) {} } };
+function toast(m) { const t = $("toast"); t.textContent = m; t.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(() => t.hidden = true, 2400); }
+async function copy(text, msg) {
+  try { await navigator.clipboard.writeText(text); toast(msg || "Copied"); }
+  catch (e) { const ta = document.createElement("textarea"); ta.value = text; document.body.appendChild(ta); ta.select(); try { document.execCommand("copy"); toast(msg || "Copied"); } catch (err) { toast("Select the text and copy it"); } ta.remove(); }
+}
+$("kN").textContent = PAGE.stats.n.toLocaleString(); $("kM").textContent = PAGE.stats.medium + "%";
+$("citeText").textContent = PAGE.cite;
+$("copyCite").onclick = () => copy(PAGE.cite, "Citation copied");
+
+/* ---------- ethics checklist ---------- */
+const CHECKS = [
+  ["The data are anonymised or synthetic", "No names, student IDs, emails, phone numbers or photos"],
+  ["I may use this dataset", "Licence (here CC BY 4.0) or written permission from the data owner"],
+  ["Participants consented to this kind of use", "Check the consent wording; secondary use and AI processing"],
+  ["My project's ethics status is clear", "New human-participant data at EWU with significant ethical implications goes to EWUREC"],
+  ["I checked my AI account's data settings", "Training opt-out, data retention; institutional account if available"],
+  ["I will not try to re-identify anyone", "No linking IDs to people; no reporting cells under 10"],
+  ["I will verify every number before using it", "Re-run code; compare with a second tool or by hand"],
+  ["I will disclose AI use and cite the data", "Tool, version, steps it performed; dataset citation and DOI"]];
+let ck = store.get("checks", {});
+function renderChecks() {
+  $("checklist").innerHTML = CHECKS.map((c, i) => `<label class="check"><input type="checkbox" data-ck="${i}" ${ck[i] ? "checked" : ""}><span>${esc(c[0])}<small>${esc(c[1])}</small></span></label>`).join("");
+  const n = CHECKS.filter((_, i) => ck[i]).length; $("ckCount").textContent = `${n} of ${CHECKS.length}`; $("ckBar").style.width = (n / CHECKS.length * 100) + "%";
+}
+$("checklist").addEventListener("change", e => { const i = e.target.dataset.ck; if (i === undefined) return; ck[i] = e.target.checked; store.set("checks", ck); renderChecks(); if (CHECKS.every((_, j) => ck[j])) toast("Ready to upload"); });
+renderChecks();
+
+/* ---------- workflow ---------- */
+let cur = Math.min(store.get("step", 0), PAGE.steps.length - 1);
+const anat = {}, open = store.get("open", {});
+function promptText(p) { return p.parts.map(x => x[1]).join("").trim(); }
+function renderSteps() {
+  $("steps").innerHTML = PAGE.steps.map((s, i) => `<button role="tab" aria-selected="${i === cur}" data-step="${i}"><span class="n">Step ${s.n}</span><span class="t">${esc(s.title)}</span></button>`).join("");
+  const s = PAGE.steps[cur];
+  $("stepBody").innerHTML = `<div class="stephead"><div><span class="eyebrow">Step ${s.n} of ${PAGE.steps.length - 1}</span><h3 style="font-size:1.6rem;margin-top:4px">${esc(s.title)}</h3><p class="lead" style="margin-top:6px">${esc(s.lead)}</p></div></div>` +
+    s.prompts.map(p => {
+      const isOpen = open[p.id] !== undefined ? open[p.id] : true;
+      return `<article class="prompt${anat[p.id] ? " anat" : ""}" id="card-${p.id}">
+      <div class="ph"><div><h3><span class="id">${p.id}</span>${esc(p.title)}</h3><div class="tags">${p.code ? '<span class="tag code">Runs code in Claude or ChatGPT</span>' : ""}${p.types.map(t => `<span class="tag">${esc(t)}</span>`).join("")}</div></div>
+      <div class="prow"><button class="btn small" data-anat="${p.id}" aria-pressed="${!!anat[p.id]}">${anat[p.id] ? "Hide anatomy" : "Show anatomy"}</button><button class="btn small primary" data-copy="${p.id}">Copy prompt</button></div></div>
+      <div class="pbody"><pre class="ptext">${p.parts.map(x => `<span class="seg-${x[0]}" title="${x[0]}">${esc(x[1])}</span>`).join("")}</pre>
+      <div class="notes">${p.verify ? `<div class="v"><b>Verify</b>${esc(p.verify)}</div>` : ""}${p.ethics ? `<div class="x"><b>Ethics</b>${esc(p.ethics)}</div>` : ""}</div></div>
+      <div class="result"><div class="rlabel"><b>Possible result</b><button class="btn small" data-res="${p.id}" aria-expanded="${isOpen}">${isOpen ? "Hide" : "Show"} possible result</button></div>
+      <div ${isOpen ? "" : "hidden"} id="res-${p.id}">${p.result}</div></div></article>`;
+    }).join("");
+  $("prevStep").disabled = cur === 0; $("nextStep").disabled = cur === PAGE.steps.length - 1;
+  $("nextStep").textContent = cur < PAGE.steps.length - 1 ? `Next: ${PAGE.steps[cur + 1].title} →` : "Last step";
+  store.set("step", cur);
+}
+function findPrompt(id) { for (const s of PAGE.steps) for (const p of s.prompts) if (p.id === id) return p; }
+$("steps").addEventListener("click", e => { const b = e.target.closest("[data-step]"); if (b) { cur = +b.dataset.step; renderSteps(); } });
+$("steps").addEventListener("keydown", e => { if (e.key === "ArrowRight" || e.key === "ArrowLeft") { cur = Math.max(0, Math.min(PAGE.steps.length - 1, cur + (e.key === "ArrowRight" ? 1 : -1))); renderSteps(); $("steps").querySelector(`[data-step="${cur}"]`).focus(); } });
+$("stepBody").addEventListener("click", e => {
+  const c = e.target.closest("[data-copy]"), a = e.target.closest("[data-anat]"), r = e.target.closest("[data-res]");
+  if (c) copy(promptText(findPrompt(c.dataset.copy)), `Prompt ${c.dataset.copy} copied: paste it into Claude or ChatGPT`);
+  if (a) { anat[a.dataset.anat] = !anat[a.dataset.anat]; renderSteps(); }
+  if (r) { const id = r.dataset.res; const el = $("res-" + id); el.hidden = !el.hidden; open[id] = !el.hidden; store.set("open", open); r.textContent = (el.hidden ? "Show" : "Hide") + " possible result"; r.setAttribute("aria-expanded", !el.hidden); }
+});
+$("prevStep").onclick = () => { if (cur > 0) { cur--; renderSteps(); $("workflow").scrollIntoView(); } };
+$("nextStep").onclick = () => { if (cur < PAGE.steps.length - 1) { cur++; renderSteps(); $("workflow").scrollIntoView(); } };
+renderSteps();
+
+/* ---------- prompt types ---------- */
+const TYPE_KEYS = { "Zero-shot instruction": [], "Role prompt": ["Role"], "Context-rich (RCTFC)": ["*"], "Few-shot": ["Few-shot"], "Plan-then-execute": ["Plan-then-execute"],
+  "Structured output": ["Structured output"], "Tool use (code)": ["Tool use (code)"], "Self-verification": ["Self-verification"], "Critique / red team": ["Critique"], "Meta-prompt": ["Meta-prompt"] };
+function usedBy(name) {
+  const keys = TYPE_KEYS[name] || []; const out = [];
+  PAGE.steps.forEach((s, i) => s.prompts.forEach(p => { if (keys[0] === "*" || p.types.some(t => keys.includes(t))) out.push([i, p.id]); }));
+  return out;
+}
+$("typeGrid").innerHTML = PAGE.types.map((t, i) => { const u = usedBy(t[0]); return `<button class="type" data-type="${i}" aria-pressed="false"><b>${esc(t[0])}</b><span class="small">${esc(t[1])}</span><q>${esc(t[2])}</q><span class="use">Best for: ${esc(t[3])}</span><span class="used">${u.length ? "Used in " + u.length + " workflow prompt" + (u.length > 1 ? "s" : "") : "Use it for quick questions"}</span></button>`; }).join("");
+$("typeGrid").addEventListener("click", e => {
+  const b = e.target.closest("[data-type]"); if (!b) return;
+  document.querySelectorAll(".type").forEach(x => x.setAttribute("aria-pressed", x === b));
+  const t = PAGE.types[+b.dataset.type], u = usedBy(t[0]);
+  $("typeUse").innerHTML = u.length ? `<b>${esc(t[0])}</b> appears in: ` + u.map(([i, id]) => `<a href="#workflow" data-jump="${i}" data-pid="${id}">${id}</a>`).join(", ") : `<b>${esc(t[0])}</b>: e.g. "How many rows and columns does the file have?"`;
+});
+$("typeUse").addEventListener("click", e => { const a = e.target.closest("[data-jump]"); if (!a) return; e.preventDefault(); cur = +a.dataset.jump; renderSteps(); setTimeout(() => { const el = $("card-" + a.dataset.pid); el && el.scrollIntoView({ block: "start" }); }, 30); });
+
+/* ---------- ladder ---------- */
+const RUNGS = [
+  ["Prompt", "One instruction, one answer.", "Any chat: Claude, ChatGPT, Gemini", "Quick questions; checking a definition"],
+  ["Conversation with files and code", "Several turns on uploaded data; the AI writes and runs Python and returns tables, charts and files.", "Claude (code execution and file creation) · ChatGPT (data analysis)", "Today's workflow: steps 0–10"],
+  ["Project", "A workspace whose instructions and files every chat in it can use.", "Claude Projects · ChatGPT Projects", "One Project per study: protocol, codebook, papers"],
+  ["Context file (.md)", "Plain-text facts and rules the AI reads at the start of every chat or session.", "research-context.md in a Project · CLAUDE.md for Claude Code · AGENTS.md for Codex and other agents", "Stop re-explaining coding, conventions and ethics rules"],
+  ["Skill", "A packaged procedure (SKILL.md) that loads only when a request matches its description.", "Claude Skills (Customize › Skills) · in ChatGPT, a custom GPT is the closest equivalent", "Repeatable methods: survey analysis, APA reporting"],
+  ["Tools and connectors", "The AI reads from and acts on your apps through connectors, many built on the open Model Context Protocol (MCP).", "Connectors in Claude and ChatGPT: Google Drive, GitHub, and more", "Pull literature, data and files into the workflow"],
+  ["Agent", "Plans and carries out a multi-step task with tools, pausing for your approval at checkpoints.", "Claude Code · ChatGPT agent · Codex", "Reproducible pipelines: data → analysis → report"]];
+$("ladder").innerHTML = RUNGS.map((r, i) => `<div class="rung"><span class="lv">${i + 1}</span><div><b>${esc(r[0])}</b><span class="what">${esc(r[1])}</span></div><div class="where"><em>Where</em>${esc(r[2])}</div><div class="use"><em>Use it for</em>${esc(r[3])}</div></div>`).join("");
+
+/* ---------- downloads ---------- */
+let DL = null; const IN_CLAUDE = !!(window.claude && window.claude.use);
+if (IN_CLAUDE) window.claude.use("downloads").then(d => { DL = d; }).catch(() => {});
+async function save(name, text) {
+  if (IN_CLAUDE) {
+    if (DL) { try { await DL.save({ filename: name, data: text }); toast("Saved " + name); } catch (e) { if (e && e.code !== "declined") toast("Download unavailable here; use the GitHub repository"); } }
+    else toast("Downloads are unavailable in this view; use the GitHub repository");
+    return;
+  }
+  const url = URL.createObjectURL(new Blob([text], { type: "text/plain;charset=utf-8" }));
+  const a = document.createElement("a"); a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 2000);
+}
+const FILES = [
+  ["dataset.xlsx", "Original survey file (Excel)", "Start here: upload to Claude or ChatGPT", "data/dataset.xlsx", null],
+  ["dataset_variable_encoded.xlsx", "Numerically encoded version", "Used in step 2; contains one invalid code to find", "data/dataset_variable_encoded.xlsx", null],
+  ["dataset.csv", "Original survey as CSV", "Same data, for tools that prefer CSV", null, "dataset.csv"],
+  ["dataset_variable_encoded.csv", "Encoded survey as CSV", "Same as the encoded Excel file", null, "dataset_variable_encoded.csv"],
+  ["data_dictionary.csv", "Data dictionary", "Column, type, unique values, missing, examples", null, "data_dictionary.csv"],
+  ["prompts.md", "All prompts", "Steps 0–10 in one Markdown file", null, "prompts.md"],
+  ["research-context.md", "Example context file", "Paste into a Claude or ChatGPT Project", null, "research-context.md"],
+  ["SKILL.md", "Example skill", "survey-analysis-workflow; zip it in a folder to upload", null, "SKILL.md"]];
+$("dlGrid").innerHTML = FILES.map(([name, title, desc, href, key]) => {
+  const hide = href && IN_CLAUDE;
+  return `<div class="card"${hide ? " hidden" : ""}><b>${esc(title)}</b><span class="small muted">${esc(desc)}</span><code>${esc(name)}</code>${href ? `<a class="btn small" href="${href}" download>Download</a>` : `<button class="btn small" data-file="${key}">Download</button>`}</div>`;
+}).join("");
+$("dlGrid").addEventListener("click", e => { const b = e.target.closest("[data-file]"); if (b) save(b.dataset.file, PAGE.files[b.dataset.file]); });
+</script>
+</body>
+</html>

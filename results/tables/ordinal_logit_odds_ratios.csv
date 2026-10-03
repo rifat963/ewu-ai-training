@@ -1,0 +1,6 @@
+predictor,OR,ci_low,ci_high,p
+ai_knowledge_code,0.91,0.79,1.05,0.18699253111973724
+ai_replace_jobs_code,1.48,1.3,1.7,7.999387939789284e-09
+perspective_code,1.17,1.11,1.24,5.0817132734903785e-08
+female,1.09,0.95,1.25,0.19588425188033853
+academic_year_code,1.09,1.01,1.16,0.01823817875448709

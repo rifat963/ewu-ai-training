@@ -1,0 +1,14 @@
+column,type,unique_values,missing,examples
+participant_id,ID,"3,156",0,77BE5Q; 12UT7F
+age,Numeric,10,0,24; 22
+gender,Nominal,2,0,Female; Male
+academic_year,Ordinal,4,0,4th Year; 2nd Year
+ai_knowledge,Ordinal,3,45,Medium; Low
+ai_tools_used,Multi-select,97,0,"ChatGPT, Quiltbot, Grammarly; ChatGPT, Google Gemini, Photomath"
+career_path,Free text,160,0,Researcher; Project Manager
+ai_tool_perception,Nominal (free text),68,91,I don't know for now; Google Gemini
+ai_future_perspective,Ordinal (statements),5,0,"I believe AI will mostly assist humans, with …; I think AI will replace some human jobs but a…"
+ai_replace_jobs,Ordinal,3,0,No; Partially
+ai_takeover_time,Ordinal,6,0,Never; 11–20 years
+career_anxiety,Ordinal (outcome),4,0,Low; Medium
+consent,Nominal,1,0,Yes
