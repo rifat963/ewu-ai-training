@@ -2,7 +2,7 @@
 
 Training materials for CSE faculty at East West University (EWU). Participants analyse a real, published survey dataset using **standard prompts in Claude or ChatGPT**, with no code to write, and with ethics built into each step.
 
-**Live site:** `https://rifat963.github.io/ewu-ai-training/` (once GitHub Pages is enabled)
+**Live site:** `https://rifat963.github.io/ewu-ai-training/` 
 
 ## What is inside
 
