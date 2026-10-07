@@ -9,7 +9,7 @@ Training materials for CSE faculty at East West University (EWU). Participants a
 | Folder | Contents |
 |---|---|
 | `index.html` | **EWU Prompt Lab**, an interactive site where you browse the 13 prompts, see each prompt's anatomy, copy it, and compare with the reference result. It also has the ethics checklist, prompt types, the prompt-to-agent ladder and the research ecosystem. |
-| `slides/` | Slide deck (PDF, 27 slides) and speaker notes |
+| `slides/` | Slide deck (PDF, 27 slides) |
 | `data/` | Demo dataset (Excel), data dictionary, citation and licence |
 | `prompts/` | `prompts.md` (all prompts), `research-context.md` (example context file), `survey-analysis-workflow/SKILL.md` and its upload-ready `.zip` |
 | `results/` | Reference figures, tables and `reference_results.json`, used to check your AI's answers |
